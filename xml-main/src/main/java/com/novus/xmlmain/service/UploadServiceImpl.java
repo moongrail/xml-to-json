@@ -28,6 +28,11 @@ public class UploadServiceImpl implements UploadService {
     }
 
     private JSONObject createJsonTree(JSONObject root) {
+        JSONObject jsonNode = new JSONObject();
+
+        int sum = 0;
+
+
         return null;
     }
 }
