@@ -1,21 +1,19 @@
 package com.novus.xmlmain.controllers;
 
-import com.google.gson.Gson;
 import com.novus.xmlmain.dto.ResponseForm;
 import com.novus.xmlmain.dto.UploadForm;
 import com.novus.xmlmain.exception.FormatUploadException;
 import com.novus.xmlmain.service.UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -24,7 +22,6 @@ import javax.validation.Valid;
 @Slf4j
 public class UploadController {
     private final UploadService uploadService;
-    private final Gson gson;
 
     @GetMapping
     public String getUploadForm(Model model) {
@@ -32,8 +29,9 @@ public class UploadController {
         return "uploadForm";
     }
 
+
     @PostMapping
-    public ModelAndView uploadFile(@Valid UploadForm uploadForm) {
+    public String uploadFile(@Valid UploadForm uploadForm, RedirectAttributes redirectAttributes) {
         MultipartFile file = uploadForm.getFile();
 
         if (!file.getOriginalFilename().endsWith(".xml")) {
@@ -43,12 +41,11 @@ public class UploadController {
         String result = uploadService.convertXmlToJson(file);
 
         ResponseForm responseForm = ResponseForm.builder()
-                .result(gson.toJson(result))
+                .jsonResult(result)
                 .build();
 
-        ModelAndView modelAndView = new ModelAndView("result");
-        modelAndView.addObject("responseForm", responseForm);
-//        model.addAttribute("responseForm", responseForm);
-        return modelAndView;
+        redirectAttributes.addFlashAttribute("responseForm", responseForm);
+
+        return "redirect:/result";
     }
 }

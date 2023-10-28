@@ -8,5 +8,5 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseForm {
-    private String result;
+    private String jsonResult;
 }

@@ -1,0 +1,9 @@
+version: '3.1'
+services:
+  xml-main-server:
+    build: ./xml-main
+    image: xml-main-image
+    container_name: xml-main-container
+    ports:
+      - "80:80"
+    restart: always

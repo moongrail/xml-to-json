@@ -1,6 +1,5 @@
 package com.novus.xmlmain.dto;
 
-import com.novus.xmlmain.validation.XmlFile;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 

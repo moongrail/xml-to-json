@@ -18,7 +18,7 @@ public class XmlToJsonErrorHandler {
     @ExceptionHandler(FormatUploadException.class)
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ResponseBody
-    public String handleFormatUploadException(HttpServletRequest req, FormatUploadException ex){
+    public String handleFormatUploadException(HttpServletRequest req, FormatUploadException ex) {
         log.error("Request: " + req.getRequestURL() + " raised " + ex);
         return ex.getMessage();
     }
@@ -26,7 +26,7 @@ public class XmlToJsonErrorHandler {
     @ExceptionHandler(ConvertErrorException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public String handleFormatUploadException(HttpServletRequest req, ConvertErrorException ex){
+    public String handleFormatUploadException(HttpServletRequest req, ConvertErrorException ex) {
         log.error("Request: " + req.getRequestURL() + " raised " + ex);
         return ex.getMessage();
     }

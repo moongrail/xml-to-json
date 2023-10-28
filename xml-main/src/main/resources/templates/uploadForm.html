@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Upload Form</title>
+    <title>Форма загрузки XML</title>
 </head>
 <body>
 <h1>Upload Form</h1>
-<form th:action="@{/upload}" th:object="${uploadForm}" method="post" enctype="multipart/form-data">
-    <input type="file" th:field="*{file}" />
-    <button type="submit">Upload</button>
+<form enctype="multipart/form-data" method="post" th:action="@{/upload}" th:object="${uploadForm}">
+    <input th:field="*{file}" type="file"/>
+    <button type="submit">Загрузить</button>
 </form>
 </body>
 </html>

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -21,18 +23,59 @@ public class UploadServiceImpl implements UploadService {
             JSONObject jsonObject = XML.toJSONObject(xmlSource);
             JSONObject jsonTree = createJsonTree(jsonObject.getJSONObject("root"));
 
-            return jsonTree.toString();
+            JSONObject finalJson = new JSONObject();
+            finalJson.put("root", jsonTree);
+
+            return finalJson.toString();
         } catch (IOException e) {
             throw new ConvertErrorException("Convert error file: The file is damaged or impossible to process");
         }
     }
 
     private JSONObject createJsonTree(JSONObject root) {
-        JSONObject jsonNode = new JSONObject();
+        JSONObject result = new JSONObject();
 
-        int sum = 0;
+        double sum = 0;
 
+        for (String key : root.keySet()) {
+            Object value = root.get(key);
+            if (value instanceof JSONObject) {
+                JSONObject childNode = createJsonTree((JSONObject) value);
+                sum += getChildNodeValue(childNode);
+                result.put(key, childNode);
+            } else {
+                sum += calculateValueSum((String) value);
+                result.put(key, createValueNode((String) value));
+            }
+        }
 
-        return null;
+        if (sum > 0) {
+            result.put("value", String.valueOf(sum));
+        }
+
+        return result;
+    }
+
+    private JSONObject createValueNode(String value) {
+        JSONObject valueNode = new JSONObject();
+        valueNode.put("value", value.replaceAll("[^0-9.]", ""));
+        return valueNode;
+    }
+
+    private double getChildNodeValue(JSONObject node) {
+        if (node.has("value")) {
+            return Double.parseDouble(node.getString("value"));
+        }
+        return 0;
+    }
+
+    private double calculateValueSum(String value) {
+        double sum = 0;
+        Pattern pattern = Pattern.compile("\\d+(\\.\\d+)?");
+        Matcher matcher = pattern.matcher(value);
+        while (matcher.find()) {
+            sum += Double.parseDouble(matcher.group());
+        }
+        return sum;
     }
 }
