@@ -1,6 +1,12 @@
 package com.novus.xmlmain.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 @Getter
 @Setter

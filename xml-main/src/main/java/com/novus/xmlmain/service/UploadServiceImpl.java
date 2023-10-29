@@ -36,7 +36,6 @@ public class UploadServiceImpl implements UploadService {
         JSONObject result = new JSONObject();
 
         double sum = 0;
-
         for (String key : root.keySet()) {
             Object value = root.get(key);
             if (value instanceof JSONObject) {
@@ -52,6 +51,7 @@ public class UploadServiceImpl implements UploadService {
         if (sum > 0) {
             result.put("value", String.valueOf(sum));
         }
+
 
         return result;
     }

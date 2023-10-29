@@ -31,7 +31,8 @@ public class UploadController {
 
 
     @PostMapping
-    public String uploadFile(@Valid UploadForm uploadForm, RedirectAttributes redirectAttributes) {
+    public String uploadFile(@Valid UploadForm uploadForm,
+                             RedirectAttributes redirectAttributes) {
         MultipartFile file = uploadForm.getFile();
 
         if (!file.getOriginalFilename().endsWith(".xml")) {
