@@ -2,6 +2,7 @@ package com.novus.xmlmain.service;
 
 import com.novus.xmlmain.exception.ConvertErrorException;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,22 @@ public class UploadServiceImpl implements UploadService {
         try {
             String xmlSource = new String(file.getBytes());
             JSONObject jsonObject = XML.toJSONObject(xmlSource);
-            JSONObject jsonTree = createJsonTree(jsonObject.getJSONObject("root"));
 
-            JSONObject finalJson = new JSONObject();
-            finalJson.put("root", jsonTree);
+            JSONObject jsonTree = null;
 
-            return finalJson.toString();
-        } catch (IOException e) {
+            if (jsonObject.keySet().size() >= 1) {
+                jsonTree = createJsonTree(jsonObject.getJSONObject("root"));
+
+                JSONObject finalJson = new JSONObject();
+                finalJson.put("root", jsonTree);
+
+                return finalJson.toString();
+            }
+
+            jsonObject.put("value", "0");
+            return jsonObject.toString();
+
+        } catch (IOException | JSONException e) {
             throw new ConvertErrorException("Convert error file: The file is damaged or impossible to process");
         }
     }
@@ -48,9 +58,8 @@ public class UploadServiceImpl implements UploadService {
             }
         }
 
-        if (sum > 0) {
-            result.put("value", String.valueOf(sum));
-        }
+
+        result.put("value", String.valueOf(sum));
 
 
         return result;
@@ -58,7 +67,13 @@ public class UploadServiceImpl implements UploadService {
 
     private JSONObject createValueNode(String value) {
         JSONObject valueNode = new JSONObject();
-        valueNode.put("value", value.replaceAll("[^0-9.]", ""));
+        String lineValue = value.replaceAll("[^0-9.]", "");
+
+        if (!lineValue.isEmpty()) {
+            valueNode.put("value", lineValue);
+        } else {
+            valueNode.put("value", "0");
+        }
         return valueNode;
     }
 
@@ -66,6 +81,7 @@ public class UploadServiceImpl implements UploadService {
         if (node.has("value")) {
             return Double.parseDouble(node.getString("value"));
         }
+
         return 0;
     }
 
