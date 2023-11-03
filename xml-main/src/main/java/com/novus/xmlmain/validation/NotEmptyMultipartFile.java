@@ -5,11 +5,11 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = XmlFileValidator.class)
+@Constraint(validatedBy = NotEmptyMultipartFileValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface XmlFile {
-    String message() default "Invalid file format. Only XML files are allowed.";
+public @interface NotEmptyMultipartFile {
+    String message() default "Вы не выбрали файл.";
 
     Class<?>[] groups() default {};
 

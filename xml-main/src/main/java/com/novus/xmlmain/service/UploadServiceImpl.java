@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,16 +21,16 @@ public class UploadServiceImpl implements UploadService {
     @Override
     public String convertXmlToJson(MultipartFile file) {
         try {
-            String xmlSource = new String(file.getBytes());
+            String xmlSource = new String(file.getBytes(), StandardCharsets.UTF_8);
             JSONObject jsonObject = XML.toJSONObject(xmlSource);
 
             JSONObject jsonTree = null;
 
             if (jsonObject.keySet().size() >= 1) {
-                jsonTree = createJsonTree(jsonObject.getJSONObject("root"));
+                jsonTree = createJsonTree(jsonObject.getJSONObject(jsonObject.keySet().iterator().next()));
 
                 JSONObject finalJson = new JSONObject();
-                finalJson.put("root", jsonTree);
+                finalJson.put(jsonObject.keySet().iterator().next(), jsonTree);
 
                 return finalJson.toString();
             }
@@ -38,7 +39,7 @@ public class UploadServiceImpl implements UploadService {
             return jsonObject.toString();
 
         } catch (IOException | JSONException e) {
-            throw new ConvertErrorException("Convert error file: The file is damaged or impossible to process");
+            throw new ConvertErrorException("Ошибка конвертации: Файл повреждён или XML невалидный.");
         }
     }
 
@@ -52,15 +53,16 @@ public class UploadServiceImpl implements UploadService {
                 JSONObject childNode = createJsonTree((JSONObject) value);
                 sum += getChildNodeValue(childNode);
                 result.put(key, childNode);
+            } else if (value instanceof Integer) {
+                sum += calculateValueSum(value.toString());
+                result.put(key, createValueNode(value.toString()));
             } else {
                 sum += calculateValueSum((String) value);
                 result.put(key, createValueNode((String) value));
             }
         }
 
-
         result.put("value", String.valueOf(sum));
-
 
         return result;
     }

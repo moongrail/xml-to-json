@@ -1,9 +1,13 @@
 package com.novus.xmlmain.dto;
 
-import lombok.*;
+import com.novus.xmlmain.validation.NotEmptyMultipartFile;
+import com.novus.xmlmain.validation.XmlFileFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -11,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UploadForm {
-    @NotNull
+    @NotEmptyMultipartFile
+    @XmlFileFormat
     private MultipartFile file;
 }

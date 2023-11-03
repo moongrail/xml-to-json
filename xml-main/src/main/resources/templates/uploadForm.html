@@ -4,10 +4,15 @@
     <title>Форма загрузки XML</title>
 </head>
 <body>
-<h1>Upload Form</h1>
+<h1>Форма загрузки XML</h1>
 <form enctype="multipart/form-data" method="post" th:action="@{/upload}" th:object="${uploadForm}">
     <input th:field="*{file}" type="file"/>
     <button type="submit">Загрузить</button>
 </form>
+<div th:if="${errors}">
+    <ul>
+        <li th:each="error : ${errors.allErrors}" th:text="${error.defaultMessage}"></li>
+    </ul>
+</div>
 </body>
 </html>
